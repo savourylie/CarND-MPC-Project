@@ -122,12 +122,6 @@ int main() {
           const double Lf = 2.67;
 
           // const double delta_t = 0.01;
-          // const double current_px = 0.0 + v * delta_t;
-          // const double current_py = 0.0;
-          // const double current_psi = 0.0 + (v * (-delta) / Lf) * delta_t;
-          // const double current_v = v + a * delta_t;
-          // const double current_cte = cte + v * sin(epsi) * delta_t;
-          // const double current_epsi = epsi + (v * (-delta) / Lf) * delta_t;
 
           const double current_px = 0.0;
           const double current_py = 0.0;

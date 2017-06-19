@@ -5,17 +5,18 @@
 #include <cppad/ipopt/solve.hpp>
 #include <vector>
 #include "Eigen-3.3/Eigen/Core"
+
 typedef CPPAD_TESTVECTOR(double) Dvector;
+
 using namespace std;
 
 class MPC {
  public:
 
-  Dvector vars; // where all the state and actuation variables will be stored
+  Dvector vars;
 
   Dvector vars_lowerbound;
   Dvector vars_upperbound;
-
   Dvector constraints_lowerbound;
   Dvector constraints_upperbound;
 

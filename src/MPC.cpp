@@ -23,7 +23,7 @@ const double Lf = 2.67;
 
 const double ref_cte = 0;
 const double ref_epsi = 0;
-const double ref_v = 40;
+const double ref_v = 35;
 
 // TODO: Set the number of model variables (includes both states and inputs).
   // For example: If the state is a 4 element vector, the actuators is a 2
@@ -85,7 +85,7 @@ class FG_eval {
     fg[1 + epsi_start] = vars[epsi_start];
 
     for (unsigned int t = 1; t < N; t++) {
-      // The state at time t+1 .
+      // State at time t + 1
       AD<double> x1 = vars[x_start + t];
       AD<double> y1 = vars[y_start + t];
       AD<double> psi1 = vars[psi_start + t];
@@ -93,7 +93,7 @@ class FG_eval {
       AD<double> cte1 = vars[cte_start + t];
       AD<double> epsi1 = vars[epsi_start + t];
 
-      // The state at time t.
+      // State at time t
       AD<double> x0 = vars[x_start + t - 1];
       AD<double> y0 = vars[y_start + t - 1];
       AD<double> psi0 = vars[psi_start + t - 1];
@@ -101,7 +101,7 @@ class FG_eval {
       AD<double> cte0 = vars[cte_start + t - 1];
       AD<double> epsi0 = vars[epsi_start + t - 1];
 
-      // Only consider the actuation at time t.
+      // Consider the actuation at time t
       AD<double> delta0 = vars[delta_start + t - 1];
       AD<double> a0 = vars[a_start + t - 1];
 
@@ -162,10 +162,7 @@ MPC::MPC() {
 MPC::~MPC() {}
 
 void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
-// vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   bool ok = true;
-  // size_t i;
-  // typedef CPPAD_TESTVECTOR(double) Dvector;
 
   // Set the initial variable values
   double x = state[0];
@@ -196,7 +193,7 @@ void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   this->constraints_upperbound[cte_start] = cte;
   this->constraints_upperbound[epsi_start] = epsi;
 
-  // object that computes objective and constraints
+  // FG object
   FG_eval fg_eval(coeffs);
 
   //
@@ -217,10 +214,8 @@ void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   // Change this as you see fit.
   options += "Numeric max_cpu_time          0.5\n";
 
-  // place to return solution
   CppAD::ipopt::solve_result<Dvector> solution;
 
-  // solve the problem
   CppAD::ipopt::solve<Dvector, FG_eval>(
       options, vars, vars_lowerbound, vars_upperbound, constraints_lowerbound,
       constraints_upperbound, fg_eval, solution);
@@ -232,11 +227,7 @@ void MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   auto cost = solution.obj_value;
   std::cout << "Cost " << cost << std::endl;
 
-  // TODO: Return the first actuator values. The variables can be accessed with
-  // `solution.x[i]`.
-  //
-  // {...} is shorthand for creating a vector, so auto x1 = {1.0,2.0}
-  // creates a 2 element double vector.
+  // Get solution
   this->steer = solution.x[delta_start];
   this->throttle = solution.x[a_start];
 
