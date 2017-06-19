@@ -109,40 +109,42 @@ int main() {
           Eigen::VectorXd waypoints_y(num_waypoints);
 
           for(int i = 0; i < num_waypoints; ++i) {
-            double dx = ptsx[i] - px;
-            double dy = ptsy[i] - py;
+            double shift_x = ptsx[i] - px;
+            double shift_y = ptsy[i] - py;
 
-            waypoints_x[i] = dx * cos(-psi) - dy * sin(-psi);
-            waypoints_y[i] = dy * cos(-psi) + dx * sin(-psi);
+            waypoints_x[i] = shift_x * cos(-psi) - shift_y * sin(-psi);
+            waypoints_y[i] = shift_y * cos(-psi) + shift_x * sin(-psi);
           }
           
           // Fit the waypoints with polynomial
-          auto coeffs = polyfit(waypoints_x, waypoints_y, 3);
+          const int order = 3;
+          auto coeffs = polyfit(waypoints_x, waypoints_y, order);
           // Use the polynomial and the polyeval function to calculate the current cte
-          double cte = polyeval(coeffs, px) - py;
-          double epsi = psi - atan(coeffs[1]);
+          double cte = polyeval(coeffs, 0);
+          double epsi = - atan(coeffs[1]);
 
+          double steer_value = j[1]["steering_angle"];
+          double throttle_value = j[1]["throttle"];
            //**************************************************************
           //* GET THE CURRENT DELAYED STATE
           //**************************************************************
 
-          const double dt = 0.1;
           const double Lf = 2.67;
 
-          // current state must be in vehicle coordinates with the delay factored in
-          // kinematic model is at play here
-          // note that at current state at vehicle coordinates:
-          // px, py, psi = 0.0, 0.0, 0.0
-          // note that in vehicle coordinates it is going straight ahead the x-axis
-          // which means position in vehicle's y-axis does not change
-          // the steering angle is negative the given value as we have
-          // as recall that during transformation we rotated all waypoints by -psi
-          const double current_px = 0.0 + v * dt;
+          // const double delta_t = 0.01;
+          // const double current_px = 0.0 + v * delta_t;
+          // const double current_py = 0.0;
+          // const double current_psi = 0.0 + (v * (-delta) / Lf) * delta_t;
+          // const double current_v = v + a * delta_t;
+          // const double current_cte = cte + v * sin(epsi) * delta_t;
+          // const double current_epsi = epsi + (v * (-delta) / Lf) * delta_t;
+
+          const double current_px = 0.0;
           const double current_py = 0.0;
-          const double current_psi = 0.0 + v * (-delta) / Lf * dt;
-          const double current_v = v + a * dt;
-          const double current_cte = cte + v * sin(epsi) * dt;
-          const double current_epsi = epsi + v * (-delta) / Lf * dt;
+          const double current_psi = 0.0;
+          const double current_v = v;
+          const double current_cte = cte;
+          const double current_epsi = epsi;
 
           const int num_states = 6;
           Eigen::VectorXd state(num_states);
@@ -156,12 +158,13 @@ int main() {
           // msgJson["steering_angle"] = steer_value;
           // msgJson["throttle"] = throttle_value;
 
-          msgJson["steering_angle"] = mpc.steer;
+          msgJson["steering_angle"] = mpc.steer / (deg2rad(25) * Lf);
+          // msgJson["steering_angle"] = mpc.steer;
           msgJson["throttle"] = mpc.throttle;
 
           //Display the MPC predicted trajectory 
-          msgJson["mpc_x"] = mpc.future_x;
-          msgJson["mpc_y"] = mpc.future_y;
+          msgJson["mpc_x"] = mpc.predicted_x_vals;
+          msgJson["mpc_y"] = mpc.predicted_y_vals;
 
           // //Display the MPC predicted trajectory 
           // vector<double> mpc_x_vals;
@@ -181,7 +184,7 @@ int main() {
 
           for (int i = 0; i < num_waypoints; ++i) {
             double x_step = units * i;
-            double y_step = coeffs[3] * x_step*x_step*x_step + coeffs[2] * x_step*x_step + coeffs[1] * x_step + coeffs[0];
+            double y_step = polyeval(coeffs, x_step);
 
             next_x_vals[i] = x_step;
             next_y_vals[i] = y_step;

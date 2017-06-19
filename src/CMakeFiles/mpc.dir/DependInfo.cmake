@@ -4,16 +4,15 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/calvinku/myCode/Udacity/SDCND/CarND-MPC-Project/src/MPC.cpp" "/Users/calvinku/myCode/Udacity/SDCND/CarND-MPC-Project/src/CMakeFiles/mpc.dir/MPC.cpp.o"
-  "/Users/calvinku/myCode/Udacity/SDCND/CarND-MPC-Project/src/main.cpp" "/Users/calvinku/myCode/Udacity/SDCND/CarND-MPC-Project/src/CMakeFiles/mpc.dir/main.cpp.o"
+  "/home/calvinjku/myCode/SDCND/CarND-MPC-Project/src/MPC.cpp" "/home/calvinjku/myCode/SDCND/CarND-MPC-Project/src/CMakeFiles/mpc.dir/MPC.cpp.o"
+  "/home/calvinjku/myCode/SDCND/CarND-MPC-Project/src/main.cpp" "/home/calvinjku/myCode/SDCND/CarND-MPC-Project/src/CMakeFiles/mpc.dir/main.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "Clang")
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/local/include"
   "Eigen-3.3"
-  "/usr/local/opt/openssl/include"
   )
 
 # Targets to which this target links.

@@ -11,10 +11,10 @@ using namespace std;
 class MPC {
  public:
 
-  Dvector s; // where all the state and actuation variables will be stored
+  Dvector vars; // where all the state and actuation variables will be stored
 
-  Dvector state_lowerbound; //lower limit for each corresponding variable in s
-  Dvector state_upperbound; //upper limit for each corresponding variable in s
+  Dvector vars_lowerbound; //lower limit for each corresponding variable in s
+  Dvector vars_upperbound; //upper limit for each corresponding variable in s
 
   Dvector constraints_lowerbound;
   Dvector constraints_upperbound;
@@ -22,8 +22,8 @@ class MPC {
   double steer;
   double throttle;
 
-  std::vector<double> future_x;
-  std::vector<double> future_y;
+  std::vector<double> predicted_x_vals;
+  std::vector<double> predicted_y_vals;
 
   MPC();
 
