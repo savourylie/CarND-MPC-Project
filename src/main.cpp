@@ -94,15 +94,6 @@ int main() {
           double delta = j[1]["steering_angle"];
           double a = j[1]["throttle"];
 
-          /*
-          * TODO: Calculate steering angle and throttle using MPC.
-          *
-          * Both are in between [-1, 1].
-          *
-          */
-          // double steer_value;
-          // double throttle_value;
-
           // Convert waypoints to vehicle space
           int num_waypoints = ptsx.size();
           Eigen::VectorXd waypoints_x(num_waypoints);
@@ -119,16 +110,15 @@ int main() {
           // Fit the waypoints with polynomial
           const int order = 3;
           auto coeffs = polyfit(waypoints_x, waypoints_y, order);
+
           // Use the polynomial and the polyeval function to calculate the current cte
           double cte = polyeval(coeffs, 0);
           double epsi = - atan(coeffs[1]);
 
           double steer_value = j[1]["steering_angle"];
           double throttle_value = j[1]["throttle"];
-           //**************************************************************
-          //* GET THE CURRENT DELAYED STATE
-          //**************************************************************
 
+          // Get the current state
           const double Lf = 2.67;
 
           // const double delta_t = 0.01;
@@ -155,9 +145,6 @@ int main() {
           json msgJson;
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
-          // msgJson["steering_angle"] = steer_value;
-          // msgJson["throttle"] = throttle_value;
-
           msgJson["steering_angle"] = mpc.steer / (deg2rad(25) * Lf);
           // msgJson["steering_angle"] = mpc.steer;
           msgJson["throttle"] = mpc.throttle;
@@ -165,16 +152,6 @@ int main() {
           //Display the MPC predicted trajectory 
           msgJson["mpc_x"] = mpc.predicted_x_vals;
           msgJson["mpc_y"] = mpc.predicted_y_vals;
-
-          // //Display the MPC predicted trajectory 
-          // vector<double> mpc_x_vals;
-          // vector<double> mpc_y_vals;
-
-          //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
-          // the points in the simulator are connected by a Green line
-
-          // msgJson["mpc_x"] = mpc_x_vals;
-          // msgJson["mpc_y"] = mpc_y_vals;
 
           //Display the waypoints/reference line
           vector<double> next_x_vals(num_waypoints);

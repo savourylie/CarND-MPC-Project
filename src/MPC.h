@@ -13,8 +13,8 @@ class MPC {
 
   Dvector vars; // where all the state and actuation variables will be stored
 
-  Dvector vars_lowerbound; //lower limit for each corresponding variable in s
-  Dvector vars_upperbound; //upper limit for each corresponding variable in s
+  Dvector vars_lowerbound;
+  Dvector vars_upperbound;
 
   Dvector constraints_lowerbound;
   Dvector constraints_upperbound;
