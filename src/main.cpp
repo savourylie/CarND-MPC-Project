@@ -121,14 +121,20 @@ int main() {
           // Get the current state
           const double Lf = 2.67;
 
-          // const double delta_t = 0.01;
-
-          const double current_px = 0.0;
-          const double current_py = 0.0;
-          const double current_psi = 0.0;
-          const double current_v = v;
-          const double current_cte = cte;
-          const double current_epsi = epsi;
+          // double delta_t = 0.1;
+          // double current_px = v * delta_t;
+          // double current_py = 0;
+          // double current_psi = (v * (-delta) / Lf) * delta_t;
+          // double current_v = v + a * delta_t;
+          // double current_cte = cte + v * sin(epsi) * delta_t;
+          // double current_epsi = epsi + (v * (-delta) / Lf) * delta_t;
+          
+          double current_px = 0;
+          double current_py = 0;
+          double current_psi = 0;
+          double current_v = v;
+          double current_cte = cte;
+          double current_epsi = epsi;
 
           const int num_states = 6;
           Eigen::VectorXd state(num_states);
@@ -151,7 +157,7 @@ int main() {
           vector<double> next_x_vals(num_waypoints);
           vector<double> next_y_vals(num_waypoints);
 
-          double units = 5.0;
+          double units = 10.0;
 
           for (int i = 0; i < num_waypoints; ++i) {
             double x_step = units * i;
