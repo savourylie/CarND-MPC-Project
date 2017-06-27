@@ -1,9 +1,11 @@
 #include <math.h>
+#include <time.h>
 #include <uWS/uWS.h>
 #include <chrono>
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <numeric>
 #include "Eigen-3.3/Eigen/Core"
 #include "Eigen-3.3/Eigen/QR"
 #include "MPC.h"
@@ -70,8 +72,9 @@ int main() {
 
   // MPC is initialized here!
   MPC mpc;
+  auto sys_t = std::chrono::high_resolution_clock::now();
 
-  h.onMessage([&mpc](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
+  h.onMessage([&mpc, &sys_t](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -122,19 +125,25 @@ int main() {
           const double Lf = 2.67;
 
           // double delta_t = 0.1;
-          // double current_px = v * delta_t;
-          // double current_py = 0;
-          // double current_psi = (v * (-delta) / Lf) * delta_t;
-          // double current_v = v + a * delta_t;
-          // double current_cte = cte + v * sin(epsi) * delta_t;
-          // double current_epsi = epsi + (v * (-delta) / Lf) * delta_t;
-          
-          double current_px = 0;
+          auto end_t = std::chrono::high_resolution_clock::now();
+          std::chrono::duration<double> diff = end_t - sys_t;
+          double delta_t = diff.count();
+
+          std::cout << "Delta T: " << delta_t << std::endl;
+          // double current_px = v * delta_t + 0.5 * a * delta_t * delta_t;
+          double current_px = v * delta_t;
           double current_py = 0;
-          double current_psi = 0;
-          double current_v = v;
-          double current_cte = cte;
-          double current_epsi = epsi;
+          double current_psi = (v * (-delta) / Lf) * delta_t;
+          double current_v = v + a * delta_t;
+          double current_cte = cte + v * sin(epsi) * delta_t;
+          double current_epsi = epsi + (v * (-delta) / Lf) * delta_t;
+          
+          // double current_px = 0;
+          // double current_py = 0;
+          // double current_psi = 0;
+          // double current_v = v;
+          // double current_cte = cte;
+          // double current_epsi = epsi;
 
           const int num_states = 6;
           Eigen::VectorXd state(num_states);
@@ -185,7 +194,11 @@ int main() {
           //
           // NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
           // SUBMITTING.
+          sys_t = std::chrono::high_resolution_clock::now();
           this_thread::sleep_for(chrono::milliseconds(100));
+          auto test_end = std::chrono::high_resolution_clock::now();
+          std::chrono::duration<double> test_diff = test_end - sys_t;
+          std::cout << "delta sys_t" << test_diff.count() << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {

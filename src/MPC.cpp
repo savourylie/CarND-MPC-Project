@@ -7,7 +7,7 @@ using CppAD::AD;
 
 // TODO: Set the timestep length and duration
 // size_t N = 10;
-size_t N = 12;
+size_t N = 10;
 double dt = 0.1;
 
 // This value assumes the model presented in the classroom is used.
@@ -24,7 +24,7 @@ const double Lf = 2.67;
 
 const double ref_cte = 0;
 const double ref_epsi = 0;
-const double ref_v = 45;
+const double ref_v = 35;
 
 // TODO: Set the number of model variables (includes both states and inputs).
   // For example: If the state is a 4 element vector, the actuators is a 2
@@ -61,7 +61,7 @@ class FG_eval {
      // The part of the cost based on the reference state.
     for (unsigned int t = 0; t < N; t++) {
       fg[0] += 1500 * CppAD::pow(vars[cte_start + t] - ref_cte, 2);
-      fg[0] += 3000 * CppAD::pow(vars[epsi_start + t] - ref_epsi, 2);
+      fg[0] += 4000 * CppAD::pow(vars[epsi_start + t] - ref_epsi, 2);
       fg[0] += CppAD::pow(vars[v_start + t] - ref_v, 2);
     }
 
